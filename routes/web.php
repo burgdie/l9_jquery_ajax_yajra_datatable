@@ -18,3 +18,4 @@ use App\Http\Controllers\CategoryController;
 //     return view('welcome');
 // });
 Route::get('/categories/create', [CategoryController::class, 'create']);
+Route::post('categories/store', [CategoryController::class, 'store'])->name('categories.store');
