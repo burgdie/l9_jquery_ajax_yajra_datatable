@@ -10,13 +10,15 @@
   <link rel="stylesheet" href="{{ asset('css/app.css') }}">
   {{-- Jquery --}}
   <script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
+  {{-- SweetAlert 2 --}}
+  <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
   {{-- Start Modal --}}
 
 
 <!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade ajax-modal" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
  <form id="ajaxForm">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -28,7 +30,7 @@
         <div class="form-group mb-3">
           <label for="">Name</label>
           <input type="text" id="name" name="name" class="form-control">
-          <span  id="nameError" class="mt-2 text-danger"></span>
+          <span  id="nameError" class="mt-2 text-danger error-messages"></span>
         </div>
         <div class="form-group mb-1">
           <label for="">Type</label>
@@ -37,7 +39,7 @@
             <option value="electronic">Electronic</option>
           </select>
           <br>
-          <span id="typeError" class="mt-2 text-danger"></span>
+          <span id="typeError" class="mt-2 text-danger error-messages"></span>
         </div>
       </div>
       <div class="modal-footer">
@@ -54,9 +56,23 @@
   <div class="row">
     <div class="col-md-6 offset-3 column_6">
       {{--  Button to Launch Modal --}}
-    <a class="btn btn-info" data-bs-toggle="modal" data-bs-target="#exampleModal">Add Category</a>
+      <a class="btn btn-info mb-3" data-bs-toggle="modal" data-bs-target="#exampleModal">Add Category</a>
+      <table id="category-table" class="table">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Name</th>
+            <th scope="col">Type</th>
+            <th scope="col">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+        </tbody>
+      </table>
 
     </div>
+
+
 
 
 
@@ -81,6 +97,10 @@
       $('#category-modal__saveBtn').click(function() {
         // var name = $('#name').val();
         // var type = $('#type').val();
+
+        //Clear error messages in HTML when Save Button is clicked again
+        $('.error-messages').html('');
+
         var formData = new FormData(form);
 
 
@@ -92,7 +112,17 @@
           contentType: false,
           data:  formData,
           success: function(response) {
-            console.log('response', response)
+            //console.log( response.success)
+            $('.ajax-modal').modal('hide');
+            if(response) {
+              Swal.fire({
+                  position: 'top-end',
+                  icon: 'success',
+                  title: 'Category has been saved',
+                  showConfirmButton: true,
+                  timer: 1500
+              });
+            }
           },
           error: function(error) {
             if(error){
